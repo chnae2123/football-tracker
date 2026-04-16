@@ -1,0 +1,19 @@
+{
+  "team": {
+    "name": "Fettes College Guangzhou",
+    "shortName": "FCG",
+    "season": "2025-26",
+    "crest": null
+  },
+  "players": [
+    {
+      "id": "messi",
+      "number": 8,
+      "name": "Changqi Chen",
+      "displayName": "Messi",
+      "position": "MID",
+      "photo": null,
+      "joined": "2025-09"
+    }
+  ]
+}
