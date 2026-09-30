@@ -1,0 +1,30 @@
+{
+  "team": {
+    "name": "Fettes College Guangzhou",
+    "shortName": "FCG",
+    "season": "2025-26",
+    "crest": null
+  },
+  "squad": [
+    { "playerId": "evan",     "number": null, "position": ["GK", "DEF"],      "captain": false, "joined": null, "left": null },
+    { "playerId": "jimmy",    "number": null, "position": ["GK"],             "captain": false, "joined": null, "left": null },
+    { "playerId": "tiger",    "number": 15,   "position": ["DEF"],            "captain": false, "joined": null, "left": null },
+    { "playerId": "alex",     "number": 66,   "position": ["DEF", "MID"],     "captain": false, "joined": null, "left": null },
+    { "playerId": "andy",     "number": 8,    "position": ["MID", "DEF"],     "captain": false, "joined": null, "left": null },
+    { "playerId": "tony",     "number": 10,   "position": ["MID"],            "captain": false, "joined": null, "left": null },
+    { "playerId": "san",      "number": 7,    "position": ["MID", "FW"],      "captain": true,  "joined": null, "left": null },
+    { "playerId": "nono",     "number": 39,   "position": ["MID", "FW"],      "captain": false, "joined": null, "left": null },
+    { "playerId": "kevin",    "number": 16,   "position": ["MID"],            "captain": false, "joined": null, "left": null },
+    { "playerId": "georgii",  "number": 17,   "position": ["FW", "DEF", "MID"], "captain": false, "joined": null, "left": null },
+    { "playerId": "messi",    "number": 19,   "position": ["FW", "MID"],      "captain": false, "joined": null, "left": null },
+    { "playerId": "frank",    "number": 9,    "position": ["FW"],             "captain": false, "joined": null, "left": null },
+    { "playerId": "lancelot", "number": 18,   "position": null,               "captain": false, "joined": null, "left": null },
+    { "playerId": "paul",     "number": 30,   "position": null,               "captain": false, "joined": null, "left": null },
+    { "playerId": "mason",    "number": 13,   "position": null,               "captain": false, "joined": null, "left": null },
+    { "playerId": "color",    "number": 6,    "position": null,               "captain": false, "joined": null, "left": null }
+  ],
+  "coaches": [
+    { "name": "Jacob Wise", "displayName": "Mr Wise" },
+    { "name": "Fern Wise",  "displayName": "Ms Wise" }
+  ]
+}

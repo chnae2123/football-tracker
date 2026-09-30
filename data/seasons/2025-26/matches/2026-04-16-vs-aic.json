@@ -1,0 +1,44 @@
+{
+  "id": "2026-04-16-vs-aic",
+  "date": "2026-04-16",
+  "competition": "league",
+  "matchday": null,
+  "venue": "home",
+  "opponent": {
+    "name": "亚加达学校",
+    "shortName": "AIC",
+    "crest": null
+  },
+  "score": {
+    "fcg": 5,
+    "opponent": 2
+  },
+  "formation": "2-3-1",
+  "lineup": [
+    { "playerId": "evan", "role": "GK" },
+    { "playerId": "alex", "role": "DEF" },
+    { "playerId": "tiger", "role": "DEF" },
+    { "playerId": "nono", "role": "MID" },
+    { "playerId": "tony", "role": "MID" },
+    { "playerId": "san", "role": "MID" },
+    { "playerId": "frank", "role": "FW" }
+  ],
+  "substitutes": ["kevin", "georgii", "messi", "lancelot", "mason", "color"],
+  "goals": [
+    { "team": "fcg", "scorerId": "san", "assistId": "tony", "minute": null },
+    { "team": "fcg", "scorerId": "frank", "assistId": "tony", "minute": null },
+    { "team": "opponent", "scorerId": null, "assistId": null, "minute": null },
+    { "team": "opponent", "scorerId": null, "assistId": null, "minute": null },
+    { "team": "fcg", "scorerId": "frank", "assistId": "tony", "minute": null },
+    { "team": "fcg", "scorerId": "frank", "assistId": "tony", "minute": null },
+    { "team": "fcg", "scorerId": "lancelot", "assistId": "kevin", "minute": null }
+  ],
+  "notes": "队史第三场胜利。Frank 上演帽子戏法,Lancelot 首次为球队进球。一年前我们曾 0-1 输给 AIC。",
+  "gallery": [
+    {
+      "type": "photo",
+      "src": "/gallery/2026-04-16/team.jpg",
+      "caption": "赛后全队合影 — Mr Wise 和 Ms Wise 在场边。"
+    }
+  ]
+}
