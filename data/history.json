@@ -1,0 +1,20 @@
+{
+  "articles": [
+    {
+      "id": "2026-04-16-vs-aic-recap",
+      "date": "2026-04-16",
+      "type": "recap",
+      "title": "5-2 AIC: 一年的等待",
+      "subtitle": "Frank 帽子戏法,Lancelot 首球",
+      "author": "messi",
+      "matchId": "2026-04-16-vs-aic",
+      "cover": null,
+      "paragraphs": [
+        "一年前我们曾 0-1 输给 AIC。那时我还不在这支队。",
+        "今天主场,2-3-1 阵型。开场先下两城,San 接 Tony 助攻破门,紧接着 Frank 又进了一个。",
+        "但 AIC 扳平了比分。上下半场之间,我们重新梳理了一下,Frank 下半场连进两个,全部来自 Tony 的助攻。",
+        "终场前 Kevin 一脚长传找到 Lancelot,这是他为球队打入的第一球。5-2,队史第三场胜利。"
+      ]
+    }
+  ]
+}

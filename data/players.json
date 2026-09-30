@@ -1,0 +1,20 @@
+{
+  "players": [
+    { "id": "evan",     "name": "崔鹏羽", "displayName": "Evan",     "photo": null, "firstSeason": "2025-26" },
+    { "id": "jimmy",    "name": "温厚竣", "displayName": "Jimmy",    "photo": null, "firstSeason": "2025-26" },
+    { "id": "tiger",    "name": "曾墨斜", "displayName": "Tiger",    "photo": null, "firstSeason": "2025-26" },
+    { "id": "alex",     "name": "谢梓灏", "displayName": "Alex",     "photo": null, "firstSeason": "2025-26" },
+    { "id": "andy",     "name": "钱昱龙", "displayName": "Andy",     "photo": null, "firstSeason": "2025-26" },
+    { "id": "tony",     "name": "段言诚", "displayName": "Tony",     "photo": null, "firstSeason": "2025-26" },
+    { "id": "san",      "name": "文绅",   "displayName": "San",      "photo": null, "firstSeason": "2025-26" },
+    { "id": "nono",     "name": "宿铎译", "displayName": "Nono",     "photo": null, "firstSeason": "2025-26" },
+    { "id": "kevin",    "name": "刘烨",   "displayName": "Kevin",    "photo": null, "firstSeason": "2025-26" },
+    { "id": "georgii",  "name": "刘国山", "displayName": "Georgii",  "photo": null, "firstSeason": "2025-26" },
+    { "id": "messi",    "name": "陈昌祺", "displayName": "Messi",    "photo": null, "firstSeason": "2025-26" },
+    { "id": "frank",    "name": "金德明", "displayName": "Frank",    "photo": null, "firstSeason": "2025-26" },
+    { "id": "lancelot", "name": "蓝斯诺", "displayName": "Lancelot", "photo": null, "firstSeason": "2025-26" },
+    { "id": "paul",     "name": "赵常喆", "displayName": "Paul",     "photo": null, "firstSeason": "2025-26" },
+    { "id": "mason",    "name": "崔敏才", "displayName": "Mason",    "photo": null, "firstSeason": "2025-26" },
+    { "id": "color",    "name": "颜语勋", "displayName": "Color",    "photo": null, "firstSeason": "2025-26" }
+  ]
+}
