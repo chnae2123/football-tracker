@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "check": "node scripts/validate.mjs",
-    "build": "node scripts/validate.mjs --quiet && vite build && cp dist/index.html dist/404.html",
+    "build": "node scripts/validate.mjs --quiet && vite build && cp dist/index.html dist/404.html && node scripts/route-pages.mjs",
     "preview": "vite preview"
   },
   "devDependencies": {
