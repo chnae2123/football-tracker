@@ -1,0 +1,80 @@
+{
+  "id": "2026-03-16-vs-leh",
+  "date": "2026-03-16",
+  "competition": "regular",
+  "matchday": null,
+  "venue": "home",
+  "opponent": {
+    "name": "佛山霍利斯学校",
+    "shortName": "LEH",
+    "crest": null
+  },
+  "score": {
+    "fcg": 2,
+    "opponent": 5
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goalOrder": "unknown",
+  "goals": [
+    {
+      "team": "fcg",
+      "scorerId": "tony",
+      "assistId": "san",
+      "minute": null
+    },
+    {
+      "team": "fcg",
+      "scorerId": "tony",
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    }
+  ],
+  "notes": "主场 2-5 落败，Tony 梅开二度，其中一球由 San 助攻。",
+  "gallery": []
+}

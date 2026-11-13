@@ -1,118 +1,99 @@
 import { Link } from 'react-router-dom'
-import { players, coaches, getPlayerStats } from '../data'
+import { getPlayerStats, seasonPath } from '../data'
+import { SectionHead, SeasonSwitcher } from '../components/ui'
+import { useSeason, NotFound } from '../season'
 
-const POS_ORDER = ['GK', 'DEF', 'MID', 'FW', null]
-const POS_LABEL = { GK: 'Goalkeepers', DEF: 'Defenders', MID: 'Midfielders', FW: 'Forwards', null: 'Squad' }
+const POS_ORDER = ['GK', 'DEF', 'MID', 'FW', 'null']
+const POS_LABEL = { GK: 'Goalkeepers', DEF: 'Defenders', MID: 'Midfielders', FW: 'Forwards', null: 'Others' }
 
-const POS_COLOR = {
-  GK:  { bg: '#1e3a5f', text: '#60a5fa' },
-  DEF: { bg: '#1a3a1a', text: '#4ade80' },
-  MID: { bg: '#3a2e1a', text: '#fbbf24' },
-  FW:  { bg: '#3a1a1a', text: '#f87171' },
-}
-
-function posPrimary(p) {
-  if (!p.position) return null
-  return p.position[0]
-}
-
-function PosBadge({ pos }) {
-  if (!pos) return null
-  const c = POS_COLOR[pos] || { bg: 'var(--surface-3)', text: 'var(--text-2)' }
-  return (
-    <span style={{ background: c.bg, color: c.text, fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 4, letterSpacing: '0.04em' }}>
-      {pos}
-    </span>
-  )
-}
+const COLS = '44px minmax(0,1fr) 40px 40px 40px'
 
 export default function Squad() {
-  // Group players by primary position
+  const season = useSeason()
+  if (!season) return <NotFound what="Season" />
+  const { players, coaches } = season
+
+  // How complete the goal records are: FCG goals scored vs goals with a known scorer / assist
+  const fcgGoals = season.played.reduce((n, m) => n + m.score.fcg, 0)
+  const ourGoals = season.played.flatMap((m) => m.goals.filter((g) => g.team === 'fcg'))
+  const withScorer = ourGoals.filter((g) => g.scorerId).length
+  const withAssist = ourGoals.filter((g) => g.assistId).length
+
   const groups = {}
   for (const p of players) {
-    const key = String(posPrimary(p))
-    if (!groups[key]) groups[key] = []
-    groups[key].push(p)
+    const key = String(p.position?.[0] ?? null)
+    ;(groups[key] ??= []).push(p)
   }
-
-  const orderedKeys = POS_ORDER.map(String).filter((k) => groups[k]?.length)
+  for (const g of Object.values(groups)) g.sort((a, b) => (a.number ?? 999) - (b.number ?? 999))
 
   return (
-    <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 64px' }}>
-      <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Squad</h1>
-      <p style={{ color: 'var(--text-2)', fontSize: 13, marginBottom: 24 }}>2025–26 season · {players.length} players</p>
-
-      {orderedKeys.map((key) => (
-        <div key={key} style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
-            {POS_LABEL[key === 'null' ? null : key]}
-          </div>
-          <div className="surface border-subtle" style={{ borderRadius: 12, overflow: 'hidden' }}>
-            {/* Header */}
-            <div style={{
-              display: 'grid', gridTemplateColumns: '36px 1fr 32px 32px 32px',
-              padding: '8px 16px', borderBottom: '1px solid var(--border)',
-              fontSize: 11, fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.06em',
-            }}>
-              <span>#</span>
-              <span>Name</span>
-              <span style={{ textAlign: 'center' }}>MP</span>
-              <span style={{ textAlign: 'center' }}>G</span>
-              <span style={{ textAlign: 'center' }}>A</span>
-            </div>
-            {groups[key].map((p, i) => {
-              const stats = getPlayerStats(p.id)
-              return (
-                <Link key={p.id} to={`/player/${p.id}`} state={{ from: { label: 'Squad' } }} style={{ textDecoration: 'none' }}>
-                  <div style={{
-                    display: 'grid', gridTemplateColumns: '36px 1fr 32px 32px 32px',
-                    padding: '10px 16px',
-                    borderBottom: i < groups[key].length - 1 ? '1px solid var(--border)' : 'none',
-                    alignItems: 'center', transition: 'background 0.15s',
-                  }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-2)' }}>
-                      {p.number ?? '—'}
-                    </span>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 14, color: 'var(--text-1)' }}>{p.displayName}</span>
-                        {p.captain && <span style={{ fontSize: 10, color: 'var(--yellow)', fontWeight: 700 }}>(C)</span>}
-                        <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{p.name}</span>
-                        {(p.position ?? []).map((pos) => <PosBadge key={pos} pos={pos} />)}
-                      </div>
-                    </div>
-                    <span style={{ textAlign: 'center', fontSize: 13, color: 'var(--text-2)' }}>{stats.apps || '—'}</span>
-                    <span style={{ textAlign: 'center', fontSize: 13, fontWeight: stats.goals ? 700 : 400, color: stats.goals ? 'var(--text-1)' : 'var(--text-3)' }}>{stats.goals || '—'}</span>
-                    <span style={{ textAlign: 'center', fontSize: 13, fontWeight: stats.assists ? 700 : 400, color: stats.assists ? 'var(--text-1)' : 'var(--text-3)' }}>{stats.assists || '—'}</span>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
+    <div className="page page-narrow">
+      <header style={{ marginBottom: 8 }}>
+        <SeasonSwitcher season={season} sub="/squad" />
+        <div className="kicker" style={{ marginBottom: 10 }}>{season.label} season</div>
+        <h1 className="display" style={{ fontSize: 'clamp(64px, 12vw, 112px)', margin: 0, fontWeight: 800 }}>Squad</h1>
+        <div className="muted" style={{ marginTop: 10 }}>
+          {players.length ? `${players.length} players · ${coaches.length} coaches` : '阵容待定'}
         </div>
+      </header>
+
+      {fcgGoals > 0 && (withScorer < fcgGoals || withAssist < fcgGoals) && (
+        <p className="faint" style={{ fontSize: 13, margin: '14px 0 0' }}>
+          本赛季共进 {fcgGoals} 球，已记录进球人 {withScorer} 个、助攻 {withAssist} 个，下面的 G / A 只统计已记录的部分。
+        </p>
+      )}
+
+      {players.length === 0 && (
+        <div className="empty" style={{ borderTop: '3px solid var(--rule)', marginTop: 32 }}>
+          <div className="big">阵容还没确定</div>
+          <p className="muted" style={{ margin: '10px 0 0', fontSize: 17 }}>赛季开始后，球员名单和号码会出现在这里。</p>
+        </div>
+      )}
+
+      {POS_ORDER.filter((k) => groups[k]?.length).map((key) => (
+        <section key={key} className="section" style={{ marginTop: 44 }}>
+          <SectionHead title={POS_LABEL[key]} aside={groups[key].length} />
+          <div style={{ display: 'grid', gridTemplateColumns: COLS, padding: '6px 0', borderBottom: '1px solid var(--hair)' }} className="kicker">
+            <span>No.</span><span>Player</span>
+            <span style={{ textAlign: 'right' }}>MP</span>
+            <span style={{ textAlign: 'right' }}>G</span>
+            <span style={{ textAlign: 'right' }}>A</span>
+          </div>
+          {groups[key].map((p) => {
+            const s = getPlayerStats(p.id, season.matches)
+            const cell = (v) => (
+              <span className="display num" style={{ textAlign: 'right', fontSize: 22, color: v ? 'var(--ink)' : 'var(--ink-3)' }}>
+                {v || '–'}
+              </span>
+            )
+            return (
+              <Link key={p.id} to={seasonPath(season, `/player/${p.id}`)} state={{ from: { label: 'Squad' } }} className="row"
+                style={{ display: 'grid', gridTemplateColumns: COLS, gap: 0, padding: '12px 0' }}>
+                <span className="display num" style={{ fontSize: 26, color: 'var(--accent)' }}>{p.number ?? '–'}</span>
+                <span style={{ minWidth: 0, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                  <span className="display" style={{ fontSize: 22, fontWeight: 600 }}>{p.displayName}</span>
+                  {p.captain && <span className="display" style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)', marginLeft: 6 }}>C</span>}
+                  <span className="faint" style={{ fontSize: 13, marginLeft: 8 }}>{p.name}</span>
+                  {p.position?.length > 1 && (
+                    <span className="tag" style={{ marginLeft: 8, fontSize: 11 }}>{p.position.slice(1).join(' · ')}</span>
+                  )}
+                </span>
+                {cell(s.apps)}{cell(s.goals)}{cell(s.assists)}
+              </Link>
+            )
+          })}
+        </section>
       ))}
 
-      {/* Coaches */}
-      <div style={{ marginTop: 8 }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
-          Coaching Staff
-        </div>
-        <div className="surface border-subtle" style={{ borderRadius: 12, overflow: 'hidden' }}>
-          {coaches.map((c, i) => (
-            <div key={c.name} style={{
-              padding: '12px 16px',
-              borderBottom: i < coaches.length - 1 ? '1px solid var(--border)' : 'none',
-              display: 'flex', alignItems: 'center', gap: 12,
-            }}>
-              <span style={{ fontSize: 14 }}>{c.displayName}</span>
-              <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{c.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {coaches.length > 0 && <section className="section" style={{ marginTop: 44 }}>
+        <SectionHead title="Coaches" />
+        {coaches.map((c) => (
+          <div key={c.name} className="row">
+            <span className="display" style={{ fontSize: 22, fontWeight: 600 }}>{c.displayName}</span>
+            <span className="faint" style={{ fontSize: 13 }}>{c.name}</span>
+          </div>
+        ))}
+      </section>}
     </div>
   )
 }

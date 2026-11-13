@@ -1,33 +1,298 @@
 @import "tailwindcss";
 
+/* Self-hosted so the site works in mainland China (no Google Fonts). */
+@import "@fontsource/barlow-condensed/latin-500.css";
+@import "@fontsource/barlow-condensed/latin-600.css";
+@import "@fontsource/barlow-condensed/latin-700.css";
+@import "@fontsource/barlow-condensed/latin-800.css";
+@import "@fontsource/barlow/latin-400.css";
+@import "@fontsource/barlow/latin-500.css";
+@import "@fontsource/barlow/latin-600.css";
+
+/* ------------------------------------------------------------------
+   Tokens. Change --accent to the team colour and everything follows.
+   ------------------------------------------------------------------ */
 :root {
-  --bg: #0d0d12;
-  --surface: #17171f;
-  --surface-2: #21212c;
-  --surface-3: #2a2a38;
-  --border: rgba(255,255,255,0.07);
-  --text-1: #f0f0f2;
-  --text-2: #9191a4;
-  --text-3: #5c5c72;
-  --green: #4ade80;
-  --yellow: #fbbf24;
-  --red: #f87171;
-  --blue: #60a5fa;
+  --paper: #f3f0e8;
+  --paper-2: #e9e5da;
+  --ink: #1a1915;
+  --ink-2: #5d5a51;
+  --ink-3: #8f8b80;
+  --rule: #1a1915;
+  --hair: rgba(26, 25, 21, 0.14);
+  --accent: #c2185b;      /* school 玫红 */
+  --accent-ink: #fff8fb;
+  --kit: #e266b4;         /* jersey pink */
+  --kit-2: #6f4fbf;       /* jersey purple / shorts */
+  --kit-ink: #ffffff;
+  --pitch: #3f6b4a;
+  --pitch-stripe: rgba(255, 255, 255, 0.045);
+  --pitch-line: rgba(255, 255, 255, 0.7);
+
+  --display: "Barlow Condensed", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --body: "Barlow", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14130f;
+    --paper-2: #1e1d18;
+    --ink: #ece7db;
+    --ink-2: #a8a396;
+    --ink-3: #6e6a5f;
+    --rule: #ece7db;
+    --hair: rgba(236, 231, 219, 0.13);
+    --accent: #f0508f;
+    --accent-ink: #14130f;
+    --kit: #e874bd;
+    --kit-2: #8a6ad6;
+    --kit-ink: #ffffff;
+    --pitch: #2c4a35;
+    --pitch-stripe: rgba(255, 255, 255, 0.035);
+    --pitch-line: rgba(255, 255, 255, 0.55);
+    color-scheme: dark;
+  }
 }
 
 * { box-sizing: border-box; }
 
+html, body { margin: 0; }
+
 body {
-  background: var(--bg);
-  color: var(--text-1);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
 
-.surface   { background: var(--surface); }
-.surface-2 { background: var(--surface-2); }
-.surface-3 { background: var(--surface-3); }
-.border-subtle { border: 1px solid var(--border); }
-.text-2 { color: var(--text-2); }
-.text-3 { color: var(--text-3); }
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* ------------------------------------------------------------------
+   Layout
+   ------------------------------------------------------------------ */
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px 96px;
+}
+.page-narrow { max-width: 720px; }
+
+@media (max-width: 600px) {
+  .page { padding: 20px 16px 72px; }
+}
+
+/* ------------------------------------------------------------------
+   Type
+   ------------------------------------------------------------------ */
+.display {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+
+.kicker {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.num { font-variant-numeric: tabular-nums; }
+
+.muted { color: var(--ink-2); }
+.faint { color: var(--ink-3); }
+
+/* Section heading: heavy rule on top, label underneath */
+.section {
+  margin-top: 56px;
+}
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 3px solid var(--rule);
+  padding-top: 10px;
+  margin-bottom: 4px;
+}
+.section-head h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.section-head .aside {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+
+.back {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+.back:hover { color: var(--accent); }
+
+/* ------------------------------------------------------------------
+   Rows (lists separated by hairlines)
+   ------------------------------------------------------------------ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hair);
+}
+a.row { transition: color 0.12s; }
+a.row:hover { color: var(--accent); }
+a.row:hover .row-arrow { transform: translateX(3px); color: var(--accent); }
+.row-arrow {
+  font-family: var(--display);
+  color: var(--ink-3);
+  transition: transform 0.15s, color 0.15s;
+}
+
+/* Result mark: W solid, D outlined, L ink */
+.result {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.result-W { background: var(--accent); color: var(--accent-ink); }
+.result-D { border: 1.5px solid var(--ink); color: var(--ink); }
+.result-L { background: var(--ink); color: var(--paper); }
+
+/* Small text tag, no fill */
+.tag {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.tag + .tag::before {
+  content: "/";
+  margin: 0 6px;
+  color: var(--ink-3);
+}
+
+/* Big stat strip */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 5), 1fr);
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.stat {
+  padding: 16px 0 14px;
+  border-left: 1px solid var(--hair);
+  padding-left: 16px;
+}
+.stat:first-child { border-left: none; padding-left: 0; }
+.stat .v {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+.stat .l {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-top: 4px;
+}
+.stat .v { white-space: nowrap; }
+.stat .v.small { font-size: 40px; padding-top: 12px; }
+.stat.accent .v { color: var(--accent); }
+
+@media (max-width: 600px) {
+  .stat { padding-left: 10px; }
+  .stat .v { font-size: 40px; }
+  .stat .v.small { font-size: 26px; padding-top: 10px; }
+  .stat .l { font-size: 11px; }
+}
+
+/* Two-column helper that collapses on phones */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 48px;
+}
+@media (max-width: 760px) {
+  .split { grid-template-columns: 1fr; }
+}
+
+/* Season switcher */
+.season-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-bottom: 14px;
+}
+.season-switch a {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+.season-switch a:hover { color: var(--ink); }
+.season-switch a.on { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Empty state for a season with nothing in it yet */
+.empty {
+  padding: 40px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.empty .big {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(28px, 5vw, 40px);
+  line-height: 1.1;
+}
+
+/* Match whose details haven't been filled in yet */
+.pending {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  border: 1px dashed var(--ink-3);
+  padding: 3px 8px;
+  white-space: nowrap;
+}

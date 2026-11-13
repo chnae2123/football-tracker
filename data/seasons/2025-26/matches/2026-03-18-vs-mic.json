@@ -1,0 +1,48 @@
+{
+  "id": "2026-03-18-vs-mic",
+  "date": "2026-03-18",
+  "competition": "regular",
+  "matchday": null,
+  "venue": "away",
+  "opponent": {
+    "name": "佛山美伦国际学校",
+    "shortName": "MIC",
+    "crest": null
+  },
+  "score": {
+    "fcg": 1,
+    "opponent": 0
+  },
+  "formation": null,
+  "lineup": [
+    {
+      "playerId": "jimmy",
+      "role": "GK"
+    }
+  ],
+  "substitutes": [
+    "evan"
+  ],
+  "appeared": [
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goals": [
+    {
+      "team": "fcg",
+      "scorerId": "evan",
+      "assistId": null,
+      "minute": null
+    }
+  ],
+  "notes": "客场 1-0 绝杀。门将 Evan 替补登场打进制胜球，当天首发门将是 Jimmy。",
+  "gallery": []
+}

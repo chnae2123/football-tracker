@@ -1,0 +1,52 @@
+{
+  "id": "2026-03-21-vs-harrow",
+  "date": "2026-03-21",
+  "kickoff": "14:45",
+  "competition": "tournament",
+  "tournament": "nessic-2026",
+  "matchday": 5,
+  "venue": "home",
+  "pitch": "Pitch 2",
+  "opponent": {
+    "name": "Harrow Haikou",
+    "shortName": "Harrow",
+    "crest": null
+  },
+  "score": {
+    "fcg": 1,
+    "opponent": 1
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goals": [
+    {
+      "team": "fcg",
+      "scorerId": "frank",
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    }
+  ],
+  "notes": "Frank 打进领先进球，最终 1-1 战平。",
+  "gallery": []
+}

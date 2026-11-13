@@ -1,0 +1,39 @@
+{
+  "id": "2026-03-21-vs-hiba",
+  "date": "2026-03-21",
+  "kickoff": "08:30",
+  "competition": "tournament",
+  "tournament": "nessic-2026",
+  "matchday": 1,
+  "venue": "home",
+  "pitch": "Pitch 2",
+  "opponent": {
+    "name": "HIBA Shanghai",
+    "shortName": "HIBA",
+    "crest": null
+  },
+  "score": {
+    "fcg": 0,
+    "opponent": 5
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goals": [],
+  "notes": null,
+  "gallery": []
+}

@@ -1,0 +1,39 @@
+{
+  "id": "2026-03-22-vs-dsa",
+  "date": "2026-03-22",
+  "kickoff": "09:40",
+  "competition": "tournament",
+  "tournament": "nessic-2026",
+  "matchday": 7,
+  "venue": "home",
+  "pitch": "Pitch 2",
+  "opponent": {
+    "name": "DS Academy",
+    "shortName": "DSA",
+    "crest": null
+  },
+  "score": {
+    "fcg": 0,
+    "opponent": 3
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goals": [],
+  "notes": null,
+  "gallery": []
+}

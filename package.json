@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp dist/index.html dist/404.html",
+    "check": "node scripts/validate.mjs",
+    "build": "node scripts/validate.mjs --quiet && vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -16,6 +17,8 @@
     "vite": "^8.0.4"
   },
   "dependencies": {
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.1"

@@ -1,0 +1,52 @@
+{
+  "id": "2026-03-22-vs-bibs",
+  "date": "2026-03-22",
+  "kickoff": "14:10",
+  "competition": "tournament",
+  "tournament": "nessic-2026",
+  "matchday": 8,
+  "venue": "home",
+  "pitch": "Pitch 1",
+  "opponent": {
+    "name": "BIBS",
+    "shortName": "BIBS",
+    "crest": null
+  },
+  "score": {
+    "fcg": 1,
+    "opponent": 1
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goals": [
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "fcg",
+      "scorerId": "kevin",
+      "assistId": null,
+      "minute": null
+    }
+  ],
+  "notes": "Kevin 打进扳平进球。",
+  "gallery": []
+}

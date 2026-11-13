@@ -1,0 +1,53 @@
+{
+  "id": "2026-03-21-vs-cranleigh",
+  "date": "2026-03-21",
+  "kickoff": "10:15",
+  "competition": "tournament",
+  "tournament": "nessic-2026",
+  "matchday": 2,
+  "venue": "home",
+  "pitch": "Pitch 1",
+  "opponent": {
+    "name": "Cogdel Cranleigh",
+    "shortName": "Cranleigh",
+    "crest": null
+  },
+  "score": {
+    "fcg": 1,
+    "opponent": 1
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goalOrder": "unknown",
+  "goals": [
+    {
+      "team": "fcg",
+      "scorerId": "tony",
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    }
+  ],
+  "notes": "Tony 进球，1-1 战平。",
+  "gallery": []
+}

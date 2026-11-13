@@ -41,6 +41,7 @@ data/
 
 | Field | Type | Notes |
 |---|---|---|
+| `status` | `"upcoming"` \| `"active"` \| `"completed"` | 赛季状态，显示在首页；不填按 `active` |
 | `team.name` | string | 全称 |
 | `team.shortName` | string | 3 letters,用于球衣/徽章 |
 | `team.season` | string | e.g. `"2025-26"` |
@@ -60,7 +61,7 @@ data/
 |---|---|---|
 | `id` | string | 必须和文件名一致(不含 `.json`) |
 | `date` | string | `"YYYY-MM-DD"` |
-| `competition` | enum | `"league" \| "cup" \| "friendly"` |
+| `competition` | enum | `"regular"`（性质不确定的一般比赛，默认用这个）\| `"tournament"` \| `"league"` \| `"cup"` \| `"friendly"` |
 | `matchday` | integer \| null | 联赛轮次,杯赛/友谊赛可 null |
 | `venue` | enum | `"home" \| "away" \| "neutral"` |
 | `opponent.name` / `.shortName` / `.crest` | | 同 team 结构 |
@@ -134,4 +135,45 @@ History 页面是周报、专栏、赛后手记这类文字作品的集合。每
    - 离队球员从 `squad[]` 移除(历史比赛仍引用他们,没问题)
    - 新球员先在 `data/players.json` 加一条 stable 记录,再在 `squad[]` 挂号码和位置
 2. 创建 `data/seasons/<new-slug>/matches/` 目录
-3. 前端自动把 slug 字典序最大的赛季当作"当前赛季"
+3. 前端自动把 slug 字典序最大的赛季当作"当前赛季"（`/` 显示它），并把上一季的 `status` 改成 `"completed"`
+4. 每个赛季有自己的网址：`/<slug>`、`/<slug>/squad`、`/<slug>/match/<id>`、`/<slug>/player/<id>`；统计、号码只按该赛季计算
+5. 还没开始的赛季可以 `squad: []`、`coaches: []`，页面会显示"赛季还没开始 / 阵容还没确定"
+
+## 待补录的比赛
+
+比赛细节还没想起来时，可以先建一个"空壳"：`score: null`、`formation: null`、`lineup: []`、`goals: []`。
+页面会显示"待补录"，这场比赛**不计入任何统计**（战绩、射手榜、球员数据）。补上比分和阵容后自动计入。
+日期不确定时加 `"dateConfirmed": false`。
+
+## `seasons/<slug>/tournaments/*.json` schema (杯赛 / 赛会)
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | e.g. `"nessic-2026"`，页面地址 `/<season>/tournament/<id>` |
+| `name` / `shortName` / `fullName` | string | 显示名 |
+| `startDate` / `endDate` | `YYYY-MM-DD` | |
+| `dateLabel` | string | 页面上显示的日期文字 |
+| `format` | string | e.g. `"Round robin · 9 teams"` |
+| `us` | string | 积分表里 FCG 那一行的 `team` 值 |
+| `standingsSource` | string | 积分表来源 |
+| `standings[]` | `{pos, team, name, shortName, p, w, d, l, gf, ga, pts}` | 官方最终积分表，原样录入 |
+
+比赛文件用 `"competition": "tournament"` + `"tournament": "<id>"` 挂到赛事上。
+赛事页会用官方积分表减去已补录的比赛，算出"剩下几场应该是几胜几平几负、进几失几"，全部补完后自动核对是否一致。
+
+## 只知道谁上场、不知道首发还是替补
+
+用 `"appeared": ["playerId", ...]`。这些人计入出场次数，但不算首发也不算替补。
+比赛页会单独列出 "Also played"，球场上的首发位置仍然是虚线空球衣。
+
+## 数据校验
+
+```bash
+npm run check
+```
+
+检查所有数据文件：球员是否在名单里、号码是否重复、文件名和 id 是否一致、日期是否在赛季范围内、阵型是否是 6 名场上球员、进球数是否超过比分、FCG 进球是否都有进球人、同一个人是否同时出现在首发和替补、照片文件是否存在、赛事积分表是否自洽，以及赛事比分加起来是否和官方积分表一致。
+
+- **ERROR**：数据有错，必须修。`npm run build`（也就是 GitHub 自动部署）会先跑校验，有错误就不会构建，网站也不会更新。
+- **warn**：数据不完整但没错（比如首发没记录），只提示，不阻止发布。
+- 赛事比分和官方积分表对不上时：如果在赛事文件里写了 `discrepancyNote` 说明原因，就降级为 warn。

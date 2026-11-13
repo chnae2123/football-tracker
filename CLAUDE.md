@@ -46,11 +46,11 @@ See `README.md` for the full data schema (multi-season layout).
 
 Changqi is the sole data maintainer. He'll paste in match memories conversationally; Claude Code should help convert to valid JSON matching the schema and drop it in `data/seasons/<slug>/matches/`.
 
-Validation rules (enforce when adding matches):
-- All `playerId` values must exist in `data/players.json` (and in the season's `squad[]`)
-- `lineup` length must be 7
-- `fcg` team goals must have a non-null `scorerId`
-- File name must match the `id` field
+Validation: run `npm run check` after every data change (it also runs at the start of `npm run build`, so CI won't deploy broken data). Rules live in `scripts/validate.mjs`; ERRORs must be fixed, warnings are known gaps (e.g. unrecorded line-ups). Key rules:
+- All `playerId` values must exist in `data/players.json` and in the season's `squad[]`
+- `lineup` has at most 7 entries; partial line-ups are allowed (warning), a full one needs exactly one GK
+- `fcg` team goals must have a non-null `scorerId`; listed goals can't exceed the score
+- File name must match the `id` field; match dates must fall inside the season
 
 ## What NOT to do
 

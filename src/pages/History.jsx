@@ -1,82 +1,50 @@
 import { Link } from 'react-router-dom'
 import { articles, getPlayer, asset } from '../data'
+import { longDate } from '../components/ui'
 
-const TYPE_LABEL = {
-  recap: { label: 'Recap', color: '#4ade80' },
-  column: { label: 'Column', color: '#fbbf24' },
-  weekly: { label: 'Weekly', color: '#60a5fa' },
-  feature: { label: 'Feature', color: '#f472b6' },
-}
+export const TYPE_LABEL = { recap: 'Match report', column: 'Column', weekly: 'Weekly', feature: 'Feature' }
 
 export default function History() {
   return (
-    <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 64px' }}>
-      <h1 style={{ fontSize: 20, fontWeight: 700 }}>History</h1>
-      <p style={{ color: 'var(--text-2)', fontSize: 13, marginTop: 4, marginBottom: 24 }}>
-        周报、专栏、赛后手记
-      </p>
+    <div className="page page-narrow">
+      <header style={{ borderBottom: '3px solid var(--rule)', paddingBottom: 20, marginBottom: 8 }}>
+        <div className="kicker" style={{ marginBottom: 10 }}>周报 · 专栏 · 赛后手记</div>
+        <h1 className="display" style={{ fontSize: 'clamp(64px, 12vw, 112px)', margin: 0, fontWeight: 800 }}>Stories</h1>
+      </header>
 
-      {articles.length === 0 ? (
-        <div className="surface border-subtle" style={{ borderRadius: 12, padding: '32px 20px', textAlign: 'center', color: 'var(--text-3)', fontSize: 13 }}>
-          还没有文章。
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {articles.map((a) => {
-            const author = a.author ? getPlayer(a.author) : null
-            const meta = TYPE_LABEL[a.type] || { label: a.type, color: 'var(--text-2)' }
-            const preview = (a.paragraphs && a.paragraphs[0]) || ''
+      {articles.length === 0 && <p className="faint" style={{ padding: '32px 0' }}>还没有文章。</p>}
 
-            return (
-              <Link key={a.id} to={`/history/${a.id}`} style={{ textDecoration: 'none' }}>
-                <article className="surface border-subtle" style={{
-                  borderRadius: 12, padding: '16px 18px',
-                  transition: 'background 0.15s',
-                }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'var(--surface)'}
-                >
-                  {/* Cover */}
-                  {a.cover && (
-                    <img src={asset(a.cover)} alt="" style={{
-                      width: 'calc(100% + 36px)', margin: '-16px -18px 14px',
-                      display: 'block', aspectRatio: '16/9', objectFit: 'cover',
-                    }} />
-                  )}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                    <span style={{
-                      fontSize: 10, fontWeight: 700, letterSpacing: '0.06em',
-                      color: meta.color, textTransform: 'uppercase',
-                      padding: '2px 8px', borderRadius: 4,
-                      background: `${meta.color}1a`,
-                    }}>{meta.label}</span>
-                    <span style={{ fontSize: 11, color: 'var(--text-3)', fontFamily: 'monospace' }}>{a.date}</span>
-                  </div>
-
-                  <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-1)', margin: '0 0 4px', lineHeight: 1.3 }}>
-                    {a.title}
-                  </h2>
-                  {a.subtitle && (
-                    <div style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 8 }}>{a.subtitle}</div>
-                  )}
-                  {preview && (
-                    <p style={{
-                      fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55, margin: '8px 0 0',
-                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}>{preview}</p>
-                  )}
-                  {author && (
-                    <div style={{ marginTop: 12, fontSize: 12, color: 'var(--text-3)' }}>
-                      by <span style={{ color: 'var(--text-2)' }}>{author.displayName}</span>
-                    </div>
-                  )}
-                </article>
-              </Link>
-            )
-          })}
-        </div>
-      )}
+      {articles.map((a) => {
+        const author = a.author ? getPlayer(a.author) : null
+        const preview = a.paragraphs?.[0] ?? ''
+        return (
+          <Link key={a.id} to={`/history/${a.id}`} className="story">
+            <article style={{ padding: '28px 0', borderBottom: '1px solid var(--hair)' }}>
+              {a.cover && (
+                <img src={asset(a.cover)} alt="" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block', marginBottom: 18 }} />
+              )}
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                <span className="tag" style={{ color: 'var(--accent)' }}>{TYPE_LABEL[a.type] ?? a.type}</span>
+                <span className="tag">{longDate(a.date)}</span>
+              </div>
+              <h2 className="story-title" style={{ fontSize: 30, fontWeight: 700, lineHeight: 1.2, margin: '10px 0 6px' }}>
+                {a.title}
+              </h2>
+              {a.subtitle && <div className="muted" style={{ fontSize: 17 }}>{a.subtitle}</div>}
+              {preview && (
+                <p className="muted" style={{
+                  fontSize: 15, lineHeight: 1.7, margin: '12px 0 0',
+                  display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                }}>{preview}</p>
+              )}
+              {author && <div className="kicker" style={{ marginTop: 14 }}>By {author.displayName}</div>}
+            </article>
+          </Link>
+        )
+      })}
+      <style>{`
+        .story:hover .story-title { color: var(--accent); }
+      `}</style>
     </div>
   )
 }

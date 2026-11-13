@@ -1,0 +1,53 @@
+{
+  "id": "2026-03-21-vs-changwai",
+  "date": "2026-03-21",
+  "kickoff": "11:25",
+  "competition": "tournament",
+  "tournament": "nessic-2026",
+  "matchday": 3,
+  "venue": "home",
+  "pitch": "Pitch 2",
+  "opponent": {
+    "name": "Changwai BS",
+    "shortName": "Changwai",
+    "crest": null
+  },
+  "score": {
+    "fcg": 1,
+    "opponent": 1
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goalOrder": "unknown",
+  "goals": [
+    {
+      "team": "fcg",
+      "scorerId": "alex",
+      "assistId": null,
+      "minute": null
+    },
+    {
+      "team": "opponent",
+      "scorerId": null,
+      "assistId": null,
+      "minute": null
+    }
+  ],
+  "notes": "Alex 进球，1-1 战平。",
+  "gallery": []
+}

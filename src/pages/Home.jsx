@@ -1,133 +1,96 @@
 import { Link } from 'react-router-dom'
-import { matches, team, getPlayer, getSeasonStats, resultOf, resultColor } from '../data'
-
-function FormDot({ result }) {
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      width: 24, height: 24, borderRadius: '50%',
-      background: resultColor(result),
-      color: '#000', fontSize: 11, fontWeight: 700,
-    }}>{result}</span>
-  )
-}
-
-function StatBox({ value, label, color }) {
-  return (
-    <div style={{ textAlign: 'center', padding: '16px 8px' }}>
-      <div style={{ fontSize: 28, fontWeight: 700, color: color || 'var(--text-1)', lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</div>
-    </div>
-  )
-}
+import { getSeasonStats, resultOf, seasonPath, allSeasons, tournamentMatches } from '../data'
+import { SectionHead, StatStrip, MatchRow, Result, SeasonSwitcher, statusLabel } from '../components/ui'
+import { useSeason, NotFound } from '../season'
 
 export default function Home() {
-  const { w, d, l, gf, ga, topScorers, topAssisters } = getSeasonStats()
-  const recentForm = [...matches].slice(0, 5).reverse().map(resultOf)
+  const season = useSeason()
+  if (!season) return <NotFound what="Season" />
+
+  const { matches, team } = season
+  const { w, d, l, gf, ga } = getSeasonStats(matches)
+  const form = season.played.slice(0, 5).reverse().map(resultOf)
+  const pendingCount = matches.length - season.played.length
+  const previous = allSeasons.find((s) => s.slug < season.slug && s.matches.length > 0)
 
   return (
-    <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 64px' }}>
-
-      {/* Team header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.4px' }}>{team.name}</h1>
-        <div style={{ color: 'var(--text-2)', fontSize: 13, marginTop: 4 }}>
-          {team.season} · 7-a-side
+    <div className="page">
+      <header style={{ marginBottom: 32 }}>
+        <SeasonSwitcher season={season} />
+        <div className="kicker" style={{ marginBottom: 10 }}>
+          {team.name} · 7-a-side · <span style={{ color: season.status === 'completed' ? 'var(--ink-2)' : 'var(--accent)' }}>{statusLabel(season)}</span>
         </div>
-      </div>
+        <h1 className="display" style={{ fontSize: 'clamp(72px, 16vw, 160px)', margin: 0, fontWeight: 800 }}>
+          {season.label}
+        </h1>
+        {form.length > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 18, flexWrap: 'wrap' }}>
+            <span className="kicker" style={{ marginRight: 4 }}>Last {form.length}</span>
+            {form.map((r, i) => <Result key={i} r={r} />)}
+          </div>
+        )}
+      </header>
 
-      {/* Stats bar */}
-      <div className="surface border-subtle" style={{
-        borderRadius: 12, display: 'grid',
-        gridTemplateColumns: 'repeat(5, 1fr)',
-        marginBottom: 12,
-      }}>
-        <StatBox value={matches.length} label="Played" />
-        <StatBox value={w} label="Won" color="var(--green)" />
-        <StatBox value={d} label="Drawn" color="var(--yellow)" />
-        <StatBox value={l} label="Lost" color="var(--red)" />
-        <StatBox value={`${gf}:${ga}`} label="Goals" />
-      </div>
+      {matches.length === 0 ? (
+        <div className="empty" style={{ borderTop: '3px solid var(--rule)' }}>
+          <div className="big">赛季还没开始</div>
+          <p className="muted" style={{ margin: '10px 0 0', fontSize: 17 }}>
+            {season.label} 的阵容和赛程都还没确定，第一场比赛之后这里会出现战绩、射手榜和赛果。
+          </p>
+          {previous && (
+            <Link to={seasonPath(previous)} className="back" style={{ marginTop: 20, marginBottom: 0 }}>
+              查看 {previous.label} 赛季 →
+            </Link>
+          )}
+        </div>
+      ) : (
+        <>
+          <StatStrip items={[
+            { label: 'Played', value: season.played.length },
+            { label: 'Won', value: w, accent: true },
+            { label: 'Drawn', value: d },
+            { label: 'Lost', value: l },
+            { label: 'Points', value: w * 3 + d },
+          ]} />
+          <div style={{ display: 'flex', gap: 24, marginTop: 12 }} className="kicker">
+            <span>Goals for <b className="num" style={{ color: 'var(--ink)' }}>{gf}</b></span>
+            <span>Against <b className="num" style={{ color: 'var(--ink)' }}>{ga}</b></span>
+            <span>Diff <b className="num" style={{ color: 'var(--ink)' }}>{gf - ga > 0 ? '+' : ''}{gf - ga}</b></span>
+          </div>
 
-      {/* Form */}
-      <div className="surface border-subtle" style={{
-        borderRadius: 12, padding: '14px 20px',
-        display: 'flex', alignItems: 'center', gap: 12,
-        marginBottom: 24,
-      }}>
-        <span style={{ fontSize: 12, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.06em', marginRight: 4 }}>Form</span>
-        {recentForm.length === 0
-          ? <span style={{ color: 'var(--text-3)', fontSize: 13 }}>No matches yet</span>
-          : recentForm.map((r, i) => <FormDot key={i} result={r} />)
-        }
-      </div>
-
-      {/* Leaderboards */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
-        {[
-          { title: 'Top Scorers', data: topScorers },
-          { title: 'Top Assists', data: topAssisters },
-        ].map(({ title, data }) => (
-          <div key={title} className="surface border-subtle" style={{ borderRadius: 12, overflow: 'hidden' }}>
-            <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{title}</div>
-            {data.length === 0
-              ? <div style={{ padding: '12px 16px', fontSize: 13, color: 'var(--text-3)' }}>—</div>
-              : data.slice(0, 5).map(([id, count], i) => {
-                const p = getPlayer(id)
+          {season.tournaments.length > 0 && (
+            <section className="section">
+              <SectionHead title="Tournaments" />
+              {season.tournaments.map((t) => {
+                const row = t.standings?.find((r) => r.team === t.us)
+                const n = tournamentMatches(season, t.id).length
                 return (
-                  <Link key={id} to={`/player/${id}`} state={{ from: { label: 'Overview' } }} style={{ textDecoration: 'none' }}>
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '10px 16px',
-                      borderBottom: i < Math.min(data.length, 5) - 1 ? '1px solid var(--border)' : 'none',
-                    }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <span style={{ width: 18, fontSize: 12, color: 'var(--text-3)', fontWeight: 600 }}>{i + 1}</span>
-                      <span style={{ fontSize: 14, color: 'var(--text-1)', flex: 1 }}>{p?.displayName ?? id}</span>
-                      <span style={{ fontSize: 15, fontWeight: 700 }}>{count}</span>
+                  <Link key={t.id} to={seasonPath(season, `/tournament/${t.id}`)} className="row" style={{ gap: 20 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="display" style={{ fontSize: 26, fontWeight: 700 }}>{t.name}</div>
+                      <div className="faint" style={{ fontSize: 13 }}>{t.dateLabel} · {n} matches</div>
                     </div>
+                    {row && (
+                      <div style={{ textAlign: 'right' }}>
+                        <div className="display num" style={{ fontSize: 32 }}>
+                          {row.pos}<span className="faint" style={{ fontSize: 18 }}>/{t.standings.length}</span>
+                        </div>
+                        <div className="kicker" style={{ fontSize: 11 }}>Finish</div>
+                      </div>
+                    )}
+                    <span className="row-arrow">→</span>
                   </Link>
                 )
-              })
-            }
-          </div>
-        ))}
-      </div>
+              })}
+            </section>
+          )}
 
-      {/* Matches */}
-      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
-        Matches
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {matches.map((m) => {
-          const r = resultOf(m)
-          const color = resultColor(r)
-          return (
-            <Link key={m.id} to={`/match/${m.id}`} style={{ textDecoration: 'none' }}>
-              <div className="surface border-subtle" style={{
-                borderRadius: 10, padding: '12px 16px',
-                display: 'flex', alignItems: 'center', gap: 14,
-                borderLeft: `3px solid ${color}`,
-                transition: 'background 0.15s',
-              }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'var(--surface)'}
-              >
-                <span style={{ fontSize: 11, fontWeight: 700, color, width: 14 }}>{r}</span>
-                <span style={{ fontSize: 12, color: 'var(--text-2)', width: 86 }}>{m.date}</span>
-                <span style={{ fontSize: 13, flex: 1 }}>
-                  {m.venue === 'home' ? 'vs ' : '@ '}{m.opponent.shortName}
-                </span>
-                <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 15 }}>
-                  {m.score.fcg} – {m.score.opponent}
-                </span>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
+          <section className="section">
+            <SectionHead title="Results" aside={pendingCount ? `${matches.length} matches · ${pendingCount} 待补录` : `${matches.length} matches`} />
+            {matches.map((m) => <MatchRow key={m.id} m={m} />)}
+          </section>
+        </>
+      )}
     </div>
   )
 }

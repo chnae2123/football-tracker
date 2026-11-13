@@ -1,0 +1,39 @@
+{
+  "id": "2026-03-21-vs-scie",
+  "date": "2026-03-21",
+  "kickoff": "13:35",
+  "competition": "tournament",
+  "tournament": "nessic-2026",
+  "matchday": 4,
+  "venue": "home",
+  "pitch": "Pitch 2",
+  "opponent": {
+    "name": "SCIE A",
+    "shortName": "SCIE",
+    "crest": null
+  },
+  "score": {
+    "fcg": 0,
+    "opponent": 7
+  },
+  "formation": null,
+  "lineup": [],
+  "substitutes": [],
+  "appeared": [
+    "evan",
+    "jimmy",
+    "tiger",
+    "alex",
+    "andy",
+    "tony",
+    "san",
+    "nono",
+    "kevin",
+    "georgii",
+    "messi",
+    "frank"
+  ],
+  "goals": [],
+  "notes": null,
+  "gallery": []
+}

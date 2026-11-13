@@ -1,153 +1,123 @@
-import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
-import { players, matches, getPlayer, getPlayerStats, resultOf, resultColor, playerInMatch } from '../data'
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
+import { getPlayer, getPlayerStats, playerInMatch, playerSeasons, seasonPath } from '../data'
+import { SectionHead, StatStrip, MatchRow } from '../components/ui'
+import { useSeason, NotFound } from '../season'
 
-const POS_COLOR = {
-  GK:  { bg: '#1e3a5f', text: '#60a5fa' },
-  DEF: { bg: '#1a3a1a', text: '#4ade80' },
-  MID: { bg: '#3a2e1a', text: '#fbbf24' },
-  FW:  { bg: '#3a1a1a', text: '#f87171' },
-}
-
-function PosBadge({ pos }) {
-  const c = POS_COLOR[pos] || { bg: 'var(--surface-3)', text: 'var(--text-2)' }
-  return (
-    <span style={{ background: c.bg, color: c.text, fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 5, letterSpacing: '0.04em' }}>
-      {pos}
-    </span>
-  )
-}
-
-function StatCard({ value, label }) {
-  return (
-    <div className="surface-2" style={{ borderRadius: 10, padding: '16px 12px', textAlign: 'center' }}>
-      <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 8, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</div>
-    </div>
-  )
-}
+const POS_NAME = { GK: 'Goalkeeper', DEF: 'Defender', MID: 'Midfielder', FW: 'Forward' }
 
 export default function Player() {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const player = getPlayer(id)
+  const season = useSeason()
+  const player = season && getPlayer(id, season)
+  if (!player) return <NotFound what="Player" />
 
-  // Label/target for the back link depends on where the user came from.
-  // If they arrived via a Link that passed `state.from`, respect it; otherwise
-  // default to Squad.
   const from = location.state?.from
   const backLabel = from?.label ?? 'Squad'
   const goBack = (e) => {
     e.preventDefault()
     if (from) navigate(-1)
-    else navigate('/squad')
+    else navigate(seasonPath(season, '/squad'))
   }
 
-  if (!player) return (
-    <div style={{ maxWidth: 680, margin: '0 auto', padding: '32px 16px' }}>
-      <p style={{ color: 'var(--text-2)' }}>Player not found.</p>
-      <a href="#" onClick={goBack} style={{ color: 'var(--blue)', fontSize: 14 }}>← {backLabel}</a>
-    </div>
-  )
-
-  const stats = getPlayerStats(id)
-  const playerMatches = matches.filter((m) => playerInMatch(m, id))
+  const inSquad = season.players.some((p) => p.id === id)
+  const stats = getPlayerStats(id, season.matches)
+  const playerMatches = season.matches.filter((m) => playerInMatch(m, id))
+  const career = playerSeasons(id)
 
   return (
-    <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 64px' }}>
+    <div className="page page-narrow">
+      <a href="#" onClick={goBack} className="back">← {backLabel}</a>
 
-      <a href="#" onClick={goBack} style={{ color: 'var(--text-2)', fontSize: 13, textDecoration: 'none', marginBottom: 20, display: 'inline-block' }}>
-        ← {backLabel}
-      </a>
-
-      {/* Player header */}
-      <div className="surface border-subtle" style={{ borderRadius: 14, padding: '24px 20px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 20 }}>
-        {/* Number circle */}
-        <div style={{
-          width: 64, height: 64, borderRadius: '50%',
-          background: 'var(--surface-3)',
-          border: '2px solid rgba(255,255,255,0.1)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 22, fontWeight: 800, color: 'var(--text-1)',
-          flexShrink: 0,
-        }}>
-          {player.number ?? '—'}
-        </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>{player.displayName}</h1>
-            {player.captain && (
-              <span style={{ fontSize: 11, color: 'var(--yellow)', fontWeight: 700, border: '1px solid var(--yellow)', padding: '2px 7px', borderRadius: 4, opacity: 0.85 }}>
-                CAPTAIN
-              </span>
-            )}
+      <header style={{ display: 'flex', alignItems: 'flex-end', gap: 24, borderBottom: '3px solid var(--rule)', paddingBottom: 20 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="kicker" style={{ marginBottom: 8 }}>
+            {season.label}
+            {inSquad && <> · {(player.position ?? []).map((p) => POS_NAME[p] ?? p).join(' / ') || 'Position TBD'}</>}
+            {player.captain && <span style={{ color: 'var(--accent)', marginLeft: 10 }}>Captain</span>}
           </div>
-          <div style={{ color: 'var(--text-2)', fontSize: 13, marginTop: 4 }}>{player.name}</div>
-          <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
-            {(player.position ?? []).map((pos) => <PosBadge key={pos} pos={pos} />)}
-            {!player.position && <span style={{ color: 'var(--text-3)', fontSize: 12 }}>Position TBD</span>}
-          </div>
+          <h1 className="display" style={{ fontSize: 'clamp(56px, 12vw, 104px)', margin: 0, fontWeight: 800 }}>
+            {player.displayName}
+          </h1>
+          <div className="muted" style={{ fontSize: 18, marginTop: 10 }}>{player.name}</div>
         </div>
-      </div>
+        {inSquad && player.number != null && (
+          <div className="display num" aria-label="Shirt number" style={{
+            fontSize: 'clamp(96px, 22vw, 200px)', fontWeight: 800, lineHeight: 0.8,
+            color: 'var(--accent)', flexShrink: 0,
+          }}>
+            {player.number}
+          </div>
+        )}
+      </header>
 
-      {/* Season stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
-        <StatCard value={stats.apps} label="Played" />
-        <StatCard value={stats.goals} label="Goals" />
-        <StatCard value={stats.assists} label="Assists" />
-        <StatCard value={`${stats.wins}W ${stats.draws}D ${stats.losses}L`} label="Record" />
-      </div>
+      {!inSquad && playerMatches.length === 0 ? (
+        <div className="empty">
+          <div className="big">不在 {season.label} 赛季名单里</div>
+          <p className="muted" style={{ margin: '10px 0 0', fontSize: 17 }}>这个赛季的阵容还没确定，或者这名球员没有参加这个赛季。</p>
+        </div>
+      ) : (
+        <>
+          <StatStrip items={[
+            { label: 'Played', value: stats.apps },
+            { label: 'Goals', value: stats.goals, accent: stats.goals > 0 },
+            { label: 'Assists', value: stats.assists, accent: stats.assists > 0 },
+            { label: 'W–D–L', value: `${stats.wins}-${stats.draws}-${stats.losses}` },
+          ]} />
+          {stats.apps > 0 && (
+            <div className="kicker" style={{ marginTop: 12 }}>
+              {stats.starts} starts · {stats.subs} from bench{stats.apps - stats.starts - stats.subs > 0 && ` · ${stats.apps - stats.starts - stats.subs} 首发/替补未记录`}
+            </div>
+          )}
+        </>
+      )}
 
-      {/* Match history */}
       {playerMatches.length > 0 && (
-        <div className="surface border-subtle" style={{ borderRadius: 14, overflow: 'hidden' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            Match History
-          </div>
-          {playerMatches.map((m, i) => {
-            const r = resultOf(m)
-            const rColor = resultColor(r)
-            const status = playerInMatch(m, id)
-            const playerGoals = m.goals.filter((g) => g.team === 'fcg' && g.scorerId === id).length
-            const playerAssists = m.goals.filter((g) => g.team === 'fcg' && g.assistId === id).length
+        <section className="section">
+          <SectionHead title="Matches" aside={playerMatches.length} />
+          {playerMatches.map((m) => {
+            const g = m.goals.filter((x) => x.team === 'fcg' && x.scorerId === id).length
+            const a = m.goals.filter((x) => x.team === 'fcg' && x.assistId === id).length
+            const sub = playerInMatch(m, id) === 'sub'
+            const bits = [g && `${g}G`, a && `${a}A`, sub && 'Sub'].filter(Boolean)
             return (
-              <Link key={m.id} to={`/match/${m.id}`} style={{ textDecoration: 'none' }}>
-                <div style={{
-                  padding: '11px 16px',
-                  borderBottom: i < playerMatches.length - 1 ? '1px solid var(--border)' : 'none',
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  borderLeft: `3px solid ${rColor}`,
-                  transition: 'background 0.15s',
-                }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                >
-                  <span style={{ fontSize: 11, fontWeight: 700, color: rColor, width: 14 }}>{r}</span>
-                  <span style={{ fontSize: 12, color: 'var(--text-2)', width: 86 }}>{m.date}</span>
-                  <span style={{ fontSize: 13, flex: 1, whiteSpace: 'nowrap' }}>vs {m.opponent.shortName}</span>
-                  {status === 'sub' && (
-                    <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-3)', border: '1px solid var(--border)', padding: '1px 5px', borderRadius: 3, letterSpacing: '0.04em' }}>SUB</span>
-                  )}
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    {playerGoals > 0 && (
-                      <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
-                        ⚽ {playerGoals > 1 ? `×${playerGoals}` : ''}
-                      </span>
-                    )}
-                    {playerAssists > 0 && (
-                      <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
-                        🅰️ {playerAssists > 1 ? `×${playerAssists}` : ''}
-                      </span>
-                    )}
-                  </div>
-                  <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap', flexShrink: 0 }}>
-                    {m.score.fcg}–{m.score.opponent}
-                  </span>
-                </div>
+              <MatchRow key={m.id} m={m} extra={bits.length > 0 && (
+                <span className="display" style={{ fontSize: 16, fontWeight: 600, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+                  {bits.map((b, i) => (
+                    <span key={b} style={{ marginLeft: i ? 8 : 0, color: b === 'Sub' ? 'var(--ink-3)' : 'var(--accent)' }}>{b}</span>
+                  ))}
+                </span>
+              )} />
+            )
+          })}
+        </section>
+      )}
+
+      {career.length > 0 && (
+        <section className="section">
+          <SectionHead title="By season" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 48px 48px 48px 48px', padding: '6px 0', borderBottom: '1px solid var(--hair)' }} className="kicker">
+            <span>Season</span>
+            <span style={{ textAlign: 'right' }}>No.</span>
+            <span style={{ textAlign: 'right' }}>MP</span>
+            <span style={{ textAlign: 'right' }}>G</span>
+            <span style={{ textAlign: 'right' }}>A</span>
+          </div>
+          {career.map((s) => {
+            const st = getPlayerStats(id, s.matches)
+            const num = s.players.find((p) => p.id === id)?.number
+            const on = s.slug === season.slug
+            const cell = (v) => <span className="display num" style={{ textAlign: 'right', fontSize: 22 }}>{v ?? '–'}</span>
+            return (
+              <Link key={s.slug} to={seasonPath(s, `/player/${id}`)} replace className="row"
+                style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 48px 48px 48px 48px', gap: 0 }}>
+                <span className="display" style={{ fontSize: 22, fontWeight: 600, color: on ? 'var(--accent)' : undefined }}>{s.label}</span>
+                {cell(num)}{cell(st.apps)}{cell(st.goals)}{cell(st.assists)}
               </Link>
             )
           })}
-        </div>
+        </section>
       )}
     </div>
   )
